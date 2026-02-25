@@ -19,14 +19,9 @@
     <p style="color: green;">{{ session('success') }}</p>
 @endif
 
+<div class="product-grid">
 @forelse ($products as $product)
-    <div style="
-        border:1px solid #ddd;
-        padding:15px;
-        border-radius:8px;
-        width:220px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        ">
+    <div class="product-card">
 
         @if ($product->foto)
         <img src="{{ asset('storage/'.$product->foto) }}"
@@ -66,6 +61,7 @@
 @empty
     <p>Belum ada produk.</p>
 @endforelse
+</div>
 
     <div style="margin-top:20px;">
     {{ $products->links() }}
