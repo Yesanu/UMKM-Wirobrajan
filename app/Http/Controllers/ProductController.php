@@ -84,10 +84,12 @@ public function create(Umkm $umkm)
 
 public function destroy(Umkm $umkm, Product $product)
 {
-    $product->delete();
     if ($product->foto) {
         Storage::disk('public')->delete($product->foto);
     }
+
+    $product->delete();
+
     return back()->with('success', 'Produk dihapus');
 }
 
