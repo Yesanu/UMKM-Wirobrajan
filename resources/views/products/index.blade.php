@@ -5,7 +5,7 @@
 
 @section('content')
 
-<a href="{{ route('umkm.index') }}" class="back-link">
+<a href="{{ route('admin.dashboard') }}" class="back-link">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
         <polyline points="15 18 9 12 15 6"/>
     </svg>
@@ -19,7 +19,7 @@
             {{ $products->total() }} produk terdaftar
         </div>
     </div>
-    <a href="{{ route('umkm.products.create', $umkm->id) }}" class="btn btn-primary">
+    <a href="{{ route('admin.umkm.products.create', $umkm->id) }}" class="btn btn-primary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
@@ -58,7 +58,7 @@
 
                 {{-- Actions --}}
                 <div class="product-card-actions">
-                    <a href="{{ route('umkm.products.edit', [$umkm->id, $product->id]) }}"
+                    <a href="{{ route('admin.umkm.products.edit', [$umkm->id, $product->id]) }}"
                        class="btn btn-secondary btn-sm">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -66,7 +66,7 @@
                         </svg>
                         Edit
                     </a>
-                    <form action="{{ route('umkm.products.destroy', [$umkm->id, $product->id]) }}"
+                    <form action="{{ route('admin.umkm.products.destroy', [$umkm->id, $product->id]) }}"
                           method="POST" style="margin:0">
                         @csrf @method('DELETE')
                         <button type="submit"
