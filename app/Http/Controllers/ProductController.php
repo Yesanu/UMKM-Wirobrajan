@@ -38,7 +38,7 @@ public function store(Request $request, Umkm $umkm)
 
     $umkm->products()->create($data);
 
-    return redirect()->route('umkm.products.index', $umkm->id)
+    return redirect()->route('admin.umkm.products.index', $umkm->id)
                      ->with('success', 'Produk berhasil ditambahkan');
 }
 
@@ -73,7 +73,7 @@ public function store(Request $request, Umkm $umkm)
 
     $product->update($data);
 
-    return redirect()->route('umkm.products.index', $umkm->id)
+    return redirect()->route('admin.umkm.products.index', $umkm->id)
                      ->with('success', 'Produk berhasil diperbarui');
 }
 

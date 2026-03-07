@@ -5,7 +5,7 @@
 
 @section('content')
 
-<a href="{{ route('umkm.products.index', $umkm->id) }}" class="back-link">
+<a href="{{ route('admin.umkm.products.index', $umkm->id) }}" class="back-link">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
         <polyline points="15 18 9 12 15 6"/>
     </svg>
@@ -21,7 +21,7 @@
 
 <div class="form-card">
     <form method="POST"
-          action="{{ route('umkm.products.store', $umkm->id) }}"
+          action="{{ route('admin.umkm.products.store', $umkm->id) }}"
           enctype="multipart/form-data">
         @csrf
 
@@ -65,7 +65,7 @@
                 </svg>
                 Simpan Produk
             </button>
-            <a href="{{ route('umkm.products.index', $umkm->id) }}" class="btn btn-secondary">Batal</a>
+            <a href="{{ route('admin.umkm.products.index', $umkm->id) }}" class="btn btn-secondary">Batal</a>
         </div>
     </form>
 </div>

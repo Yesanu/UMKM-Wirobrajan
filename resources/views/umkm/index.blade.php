@@ -10,7 +10,7 @@
         <div class="page-header-title">Daftar UMKM</div>
         <div class="page-header-sub">Kelola semua data usaha mikro, kecil, dan menengah</div>
     </div>
-    <a href="{{ route('umkm.create') }}" class="btn btn-primary">
+    <a href="{{ route('admin.umkm.create') }}" class="btn btn-primary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
@@ -19,7 +19,7 @@
 </div>
 
 {{-- Search & Filter Bar --}}
-<form method="GET" action="{{ route('umkm.index') }}" class="search-bar">
+<form method="GET" action="{{ route('admin.dashboard') }}" class="search-bar">
     <div class="search-input-wrap">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -46,7 +46,7 @@
     </button>
 
     @if (!empty($search) || !empty($tipe))
-        <a href="{{ route('umkm.index') }}" class="btn btn-ghost btn-sm">
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-ghost btn-sm">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
@@ -104,6 +104,11 @@
                         <span class="badge-tipe">{{ $umkm->tipe_umkm }}</span>
                     @endif
 
+                    <span class="badge-status badge-{{ $umkm->status }}"
+                          style="font-size:.65rem;margin-bottom:6px;">
+                        {{ $umkm->status === 'aktif' ? '✅ Aktif' : ($umkm->status === 'pending' ? '⏳ Pending' : '⛔ Nonaktif') }}
+                    </span>
+
                     <div class="umkm-card-name">{{ $umkm->nama_umkm }}</div>
                     <div class="umkm-card-owner">
                         Pemilik: <span>{{ $umkm->pemilik }}</span>
@@ -141,21 +146,27 @@
 
                 {{-- Actions --}}
                 <div class="umkm-card-actions">
-                    <a href="{{ route('umkm.products.index', $umkm->id) }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('admin.umkm.products.index', $umkm->id) }}" class="btn btn-primary btn-sm">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                             <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
                             <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/>
                         </svg>
                         Produk
                     </a>
-                    <a href="{{ route('umkm.edit', $umkm->id) }}" class="btn btn-secondary btn-sm">
+                    <a href="{{ route('admin.umkm.edit', $umkm->id) }}" class="btn btn-secondary btn-sm">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                         </svg>
                         Edit
                     </a>
-                    <form action="{{ route('umkm.destroy', $umkm->id) }}" method="POST" style="margin:0">
+                    @if ($umkm->status === 'pending')
+                        <form action="{{ route('admin.umkm.verify', $umkm->id) }}" method="POST" style="margin:0">
+                            @csrf
+                            <button type="submit" class="btn btn-sm" style="background:#059669;color:#fff;">✅ Verifikasi</button>
+                        </form>
+                    @endif
+                    <form action="{{ route('admin.umkm.destroy', $umkm->id) }}" method="POST" style="margin:0">
                         @csrf @method('DELETE')
                         <button type="submit"
                                 onclick="return confirm('Yakin ingin menghapus UMKM ini?')"

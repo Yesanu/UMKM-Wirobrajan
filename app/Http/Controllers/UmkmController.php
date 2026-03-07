@@ -73,7 +73,7 @@ class UmkmController extends Controller
 
         $umkm->update($validated);
 
-        return redirect()->route('umkm.index')
+        return redirect()->route('admin.dashboard')
                          ->with('success', 'Data UMKM berhasil diperbarui');
     }
 
@@ -81,8 +81,16 @@ class UmkmController extends Controller
     {
         $umkm->delete();
 
-        return redirect()->route('umkm.index')
+        return redirect()->route('admin.dashboard')
                          ->with('success', 'UMKM berhasil dihapus');
+    }
+
+    public function verify(Umkm $umkm)
+    {
+        $umkm->update(['status' => 'aktif']);
+
+        return redirect()->route('admin.dashboard')
+                         ->with('success', "UMKM \"{$umkm->nama_umkm}\" berhasil diverifikasi.");
     }
 
     public function create()
@@ -104,6 +112,8 @@ class UmkmController extends Controller
             'tipe_umkm' => 'nullable|string|in:' . implode(',', Umkm::TIPE_OPTIONS),
         ]);
 
+        $validated['status'] = 'aktif'; // Admin-created UMKM are auto-approved
+
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('umkm_logos', 'public');
             $validated['logo'] = $path;
@@ -112,7 +122,7 @@ class UmkmController extends Controller
         Umkm::create($validated);
 
         return redirect()
-                ->route('umkm.index')
+                ->route('admin.dashboard')
                 ->with('success', 'UMKM berhasil ditambahkan');
     }
 }
