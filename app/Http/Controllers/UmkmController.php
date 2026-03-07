@@ -33,7 +33,7 @@ class UmkmController extends Controller
             $query->where('tipe_umkm', $tipe);
         }
 
-        $umkms = $query->get();
+        $umkms = $query->paginate(10);
 
         return view('umkm.index', [
             'umkms'       => $umkms,

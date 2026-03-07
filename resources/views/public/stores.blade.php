@@ -47,7 +47,7 @@
             <div class="search-info" style="margin-top:-8px;">
                 @if (!empty($search)) <span>Pencarian: <strong>"{{ $search }}"</strong></span> @endif
                 @if (!empty($tipe)) <span>Tipe: <strong>{{ $tipe }}</strong></span> @endif
-                <span class="search-info-count">{{ $umkms->count() }} hasil</span>
+                <span class="search-info-count">{{ $umkms->total() }} hasil</span>
             </div>
         @endif
 
@@ -82,6 +82,10 @@
                         </div>
                     </a>
                 @endforeach
+            </div>
+
+            <div class="pagination-wrap">
+                {{ $umkms->withQueryString()->links() }}
             </div>
         @endif
 
