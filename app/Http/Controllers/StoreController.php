@@ -33,7 +33,7 @@ class StoreController extends Controller
             $query->where('tipe_umkm', $tipe);
         }
 
-        $umkms = $query->latest()->get();
+        $umkms = $query->latest()->paginate(10);
 
         return view('public.stores', [
             'umkms'       => $umkms,
@@ -55,7 +55,7 @@ class StoreController extends Controller
         $products = $umkm->products()
                          ->where('status', Product::STATUS_TERSEDIA)
                          ->latest()
-                         ->paginate(12);
+                         ->paginate(10);
 
         return view('public.store-detail', compact('umkm', 'products'));
     }

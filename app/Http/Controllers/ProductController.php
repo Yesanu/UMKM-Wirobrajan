@@ -12,7 +12,7 @@ class ProductController extends Controller
 {
     public function index(Umkm $umkm)
 {
-    $products = $umkm->products()->latest()->paginate(6);
+    $products = $umkm->products()->latest()->paginate(10);
     return view('products.index', compact('umkm', 'products'));
 }
 
@@ -20,7 +20,7 @@ public function store(Request $request, Umkm $umkm)
 {
     $request->validate([
         'nama_produk' => 'required|string|max:255',
-        'harga'       => 'required|numeric',
+        'harga'       => 'required|numeric|min:0',
         'deskripsi'   => 'nullable|string',
         'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
@@ -51,7 +51,7 @@ public function store(Request $request, Umkm $umkm)
 {
     $request->validate([
         'nama_produk' => 'required|string|max:255',
-        'harga'       => 'required|numeric',
+        'harga'       => 'required|numeric|min:0',
         'deskripsi'   => 'nullable|string',
         'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);

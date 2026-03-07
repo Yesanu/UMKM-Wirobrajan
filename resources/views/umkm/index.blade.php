@@ -64,7 +64,7 @@
         @if (!empty($tipe))
             <span>Tipe: <strong>{{ $tipe }}</strong></span>
         @endif
-        <span class="search-info-count">{{ $umkms->count() }} hasil</span>
+        <span class="search-info-count">{{ $umkms->total() }} hasil</span>
     </div>
 @endif
 
@@ -183,6 +183,10 @@
 
             </div>
         @endforeach
+    </div>
+
+    <div class="pagination-wrap">
+        {{ $umkms->withQueryString()->links() }}
     </div>
 @endif
 

@@ -135,7 +135,7 @@ class OwnerController extends Controller
             return redirect()->route('owner.createUmkm');
         }
 
-        $products = $umkm->products()->latest()->paginate(12);
+        $products = $umkm->products()->latest()->paginate(10);
 
         return view('owner.products', compact('umkm', 'products'));
     }
@@ -152,7 +152,7 @@ class OwnerController extends Controller
 
         $validated = $request->validate([
             'nama_produk' => 'required|string|max:255',
-            'harga'       => 'required|numeric',
+            'harga'       => 'required|numeric|min:0',
             'deskripsi'   => 'nullable|string',
             'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -180,7 +180,7 @@ class OwnerController extends Controller
 
         $validated = $request->validate([
             'nama_produk' => 'required|string|max:255',
-            'harga'       => 'required|numeric',
+            'harga'       => 'required|numeric|min:0',
             'deskripsi'   => 'nullable|string',
             'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);

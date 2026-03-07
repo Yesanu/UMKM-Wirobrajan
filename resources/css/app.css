@@ -838,6 +838,19 @@ body {
 }
 
 /* ── Responsive ───────────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .umkm-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
@@ -862,6 +875,19 @@ body {
     .umkm-grid,
     .product-grid {
         grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar .form-select {
+        width: 100%;
     }
 }
 
