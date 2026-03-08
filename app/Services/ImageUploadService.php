@@ -10,7 +10,7 @@ class ImageUploadService
      * Upload an image to Cloudinary using the REST API directly.
      *
      * @param  UploadedFile  $file   The uploaded file
-     * @param  string        $folder  Cloudinary folder name (e.g., 'umkm_logos', 'products')
+     * @param  string        $folder  Cloudinary folder name
      * @return string  The secure URL of the uploaded image
      */
     public static function upload(UploadedFile $file, string $folder = 'uploads'): string
@@ -18,8 +18,7 @@ class ImageUploadService
         $cloudinaryUrl = env('CLOUDINARY_URL');
 
         if (!$cloudinaryUrl) {
-            // Fallback to local storage if Cloudinary is not configured
-            return $file->store($folder, 'public');
+            throw new \RuntimeException('CLOUDINARY_URL environment variable is not set. Value: [' . ($cloudinaryUrl ?? 'null') . ']');
         }
 
         // Parse CLOUDINARY_URL: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
@@ -28,49 +27,69 @@ class ImageUploadService
         $apiSecret = $parsed['pass'] ?? '';
         $cloudName = $parsed['host'] ?? '';
 
+        if (!$apiKey || !$apiSecret || !$cloudName) {
+            throw new \RuntimeException('Invalid CLOUDINARY_URL format. Parsed: key=' . $apiKey . ', cloud=' . $cloudName);
+        }
+
+        // Copy uploaded file to /tmp to ensure it's readable
+        $tmpPath = '/tmp/' . uniqid('upload_') . '.' . $file->getClientOriginalExtension();
+        copy($file->getRealPath(), $tmpPath);
+
         $timestamp = time();
         $params = [
             'folder'    => 'umkm_wirobrajan/' . $folder,
-            'timestamp' => $timestamp,
+            'timestamp' => (string) $timestamp,
         ];
 
         // Generate signature
         ksort($params);
-        $signatureString = '';
+        $signatureParts = [];
         foreach ($params as $key => $value) {
-            $signatureString .= ($signatureString ? '&' : '') . $key . '=' . $value;
+            $signatureParts[] = $key . '=' . $value;
         }
-        $signatureString .= $apiSecret;
+        $signatureString = implode('&', $signatureParts) . $apiSecret;
         $signature = sha1($signatureString);
+
+        // Build POST fields
+        $postFields = [
+            'file'      => new \CURLFile($tmpPath, $file->getMimeType(), $file->getClientOriginalName()),
+            'folder'    => 'umkm_wirobrajan/' . $folder,
+            'timestamp' => (string) $timestamp,
+            'api_key'   => $apiKey,
+            'signature' => $signature,
+        ];
 
         // Upload via Cloudinary REST API
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloudName}/image/upload");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'file'      => new \CURLFile($file->getRealPath(), $file->getMimeType(), $file->getClientOriginalName()),
-            'folder'    => 'umkm_wirobrajan/' . $folder,
-            'timestamp' => $timestamp,
-            'api_key'   => $apiKey,
-            'signature' => $signature,
-        ]);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
 
+        // Clean up temp file
+        @unlink($tmpPath);
+
+        if ($curlError) {
+            throw new \RuntimeException('Curl error: ' . $curlError);
+        }
+
         if ($httpCode !== 200) {
-            \Log::error('Cloudinary upload failed', [
-                'http_code' => $httpCode,
-                'response'  => $response,
-            ]);
-            throw new \RuntimeException('Failed to upload image to Cloudinary');
+            throw new \RuntimeException('Cloudinary upload failed. HTTP ' . $httpCode . '. Response: ' . $response);
         }
 
         $result = json_decode($response, true);
 
-        return $result['secure_url'] ?? $result['url'] ?? '';
+        if (!$result || !isset($result['secure_url'])) {
+            throw new \RuntimeException('Cloudinary returned invalid response: ' . $response);
+        }
+
+        return $result['secure_url'];
     }
 
     /**
@@ -90,7 +109,6 @@ class ImageUploadService
             return;
         }
 
-        // Parse CLOUDINARY_URL
         $parsed = parse_url($cloudinaryUrl);
         $apiKey    = $parsed['user'] ?? '';
         $apiSecret = $parsed['pass'] ?? '';
@@ -120,16 +138,17 @@ class ImageUploadService
             curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloudName}/image/destroy");
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 15);
             curl_setopt($ch, CURLOPT_POSTFIELDS, [
                 'public_id' => $publicId,
-                'timestamp' => $timestamp,
+                'timestamp' => (string) $timestamp,
                 'api_key'   => $apiKey,
                 'signature' => $signature,
             ]);
             curl_exec($ch);
             curl_close($ch);
         } catch (\Exception $e) {
-            \Log::warning('Cloudinary delete failed: ' . $e->getMessage());
+            // Silently fail
         }
     }
 }
