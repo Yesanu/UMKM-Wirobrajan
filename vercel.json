@@ -50,6 +50,6 @@
         "CACHE_DRIVER": "array",
         "SESSION_DRIVER": "cookie",
         "LOG_CHANNEL": "stderr",
-        "CLOUDINARY_URL": "${CLOUDINARY_URL}"
+        "CLOUDINARY_URL": "cloudinary://218717214228677:NaIEsk1ioxufbyzmyU-WtQSFprs@dxhsbr4ga"
     }
 }
