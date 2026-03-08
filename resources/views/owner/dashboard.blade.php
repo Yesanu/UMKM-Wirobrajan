@@ -64,7 +64,7 @@
         <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
             <div style="flex-shrink:0;">
                 @if ($umkm->logo)
-                    <img src="{{ asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+                    <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
                 @else
                     <div class="umkm-logo-placeholder" style="width:64px;height:64px;font-size:1.5rem;">{{ mb_substr($umkm->nama_umkm, 0, 1) }}</div>
                 @endif

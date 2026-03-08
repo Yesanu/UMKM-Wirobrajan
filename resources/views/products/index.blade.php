@@ -40,7 +40,7 @@
 
                 {{-- Image --}}
                 @if ($product->foto)
-                    <img src="{{ asset('storage/'.$product->foto) }}"
+                    <img src="{{ str_starts_with($product->foto, 'http') ? $product->foto : asset('storage/'.$product->foto) }}"
                          alt="{{ $product->nama_produk }}"
                          class="product-card-img">
                 @else

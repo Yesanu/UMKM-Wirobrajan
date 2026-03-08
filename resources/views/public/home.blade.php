@@ -62,7 +62,7 @@
                 <a href="{{ route('stores.show', $umkm->id) }}" class="card umkm-pub-card">
                     <div class="umkm-pub-card-logo">
                         @if ($umkm->logo)
-                            <img src="{{ asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
+                            <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
                         @else
                             <div class="umkm-logo-placeholder" style="width:64px;height:64px;border-radius:50%;font-size:1.5rem;">
                                 {{ mb_substr($umkm->nama_umkm, 0, 1) }}

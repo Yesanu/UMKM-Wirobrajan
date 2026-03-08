@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Umkm;
 use App\Models\Product;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class OwnerController extends Controller
 {
@@ -69,7 +69,7 @@ class OwnerController extends Controller
         $validated['status']  = 'pending';
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('umkm_logos', 'public');
+            $validated['logo'] = ImageUploadService::upload($request->file('logo'), 'umkm_logos');
         }
 
         Umkm::create($validated);
@@ -96,10 +96,8 @@ class OwnerController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($umkm->logo) {
-                Storage::disk('public')->delete($umkm->logo);
-            }
-            $validated['logo'] = $request->file('logo')->store('umkm_logos', 'public');
+            ImageUploadService::delete($umkm->logo);
+            $validated['logo'] = ImageUploadService::upload($request->file('logo'), 'umkm_logos');
         }
 
         $umkm->update($validated);
@@ -158,7 +156,7 @@ class OwnerController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('products', 'public');
+            $validated['foto'] = ImageUploadService::upload($request->file('foto'), 'products');
         }
 
         $umkm->products()->create($validated);
@@ -186,10 +184,8 @@ class OwnerController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            if ($product->foto) {
-                Storage::disk('public')->delete($product->foto);
-            }
-            $validated['foto'] = $request->file('foto')->store('products', 'public');
+            ImageUploadService::delete($product->foto);
+            $validated['foto'] = ImageUploadService::upload($request->file('foto'), 'products');
         }
 
         $product->update($validated);
@@ -202,9 +198,7 @@ class OwnerController extends Controller
     {
         $this->authorizeProduct($product);
 
-        if ($product->foto) {
-            Storage::disk('public')->delete($product->foto);
-        }
+        ImageUploadService::delete($product->foto);
 
         $product->delete();
 

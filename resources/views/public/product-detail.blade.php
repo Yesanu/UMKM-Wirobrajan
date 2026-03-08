@@ -15,7 +15,7 @@
             {{-- Image --}}
             <div class="product-detail-img-wrap">
                 @if ($product->foto)
-                    <img src="{{ asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="product-detail-img">
+                    <img src="{{ str_starts_with($product->foto, 'http') ? $product->foto : asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="product-detail-img">
                 @else
                     <div class="product-card-img-placeholder" style="height:360px;border-radius:var(--radius-lg);">🛍️</div>
                 @endif
@@ -46,7 +46,7 @@
                 <div class="product-detail-store">
                     <div class="product-detail-store-logo">
                         @if ($umkm->logo)
-                            <img src="{{ asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
+                            <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
                         @else
                             <div class="umkm-logo-placeholder" style="width:100%;height:100%;font-size:1.2rem;">{{ mb_substr($umkm->nama_umkm, 0, 1) }}</div>
                         @endif

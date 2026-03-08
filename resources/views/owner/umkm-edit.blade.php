@@ -26,7 +26,7 @@
             <div class="form-group">
                 <label class="form-label">Logo Saat Ini</label>
                 <div class="preview-wrap">
-                    <img src="{{ asset('storage/'.$umkm->logo) }}" alt="Logo" class="preview-img">
+                    <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="Logo" class="preview-img">
                 </div>
             </div>
         @endif

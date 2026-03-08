@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Umkm;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class UmkmController extends Controller
 {
@@ -64,11 +64,8 @@ class UmkmController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($umkm->logo) {
-                Storage::disk('public')->delete($umkm->logo);
-            }
-            $validated['logo'] = $request->file('logo')
-                                         ->store('umkm_logos', 'public');
+            ImageUploadService::delete($umkm->logo);
+            $validated['logo'] = ImageUploadService::upload($request->file('logo'), 'umkm_logos');
         }
 
         $umkm->update($validated);
@@ -79,6 +76,7 @@ class UmkmController extends Controller
 
     public function destroy(Umkm $umkm)
     {
+        ImageUploadService::delete($umkm->logo);
         $umkm->delete();
 
         return redirect()->route('admin.dashboard')
@@ -115,8 +113,7 @@ class UmkmController extends Controller
         $validated['status'] = 'aktif'; // Admin-created UMKM are auto-approved
 
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('umkm_logos', 'public');
-            $validated['logo'] = $path;
+            $validated['logo'] = ImageUploadService::upload($request->file('logo'), 'umkm_logos');
         }
 
         Umkm::create($validated);

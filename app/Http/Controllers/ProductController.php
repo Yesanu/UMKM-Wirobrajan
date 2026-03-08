@@ -4,43 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\Umkm;
 use App\Models\Product;
+use App\Services\ImageUploadService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index(Umkm $umkm)
-{
-    $products = $umkm->products()->latest()->paginate(10);
-    return view('products.index', compact('umkm', 'products'));
-}
-
-public function store(Request $request, Umkm $umkm)
-{
-    $request->validate([
-        'nama_produk' => 'required|string|max:255',
-        'harga'       => 'required|numeric|min:0',
-        'deskripsi'   => 'nullable|string',
-        'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-     $data = $request->only([
-        'nama_produk',
-        'harga',
-        'deskripsi'
-    ]);
-
-    if ($request->hasFile('foto')) {
-        $data['foto'] = $request->file('foto')
-                                ->store('products', 'public');
+    {
+        $products = $umkm->products()->latest()->paginate(10);
+        return view('products.index', compact('umkm', 'products'));
     }
 
-    $umkm->products()->create($data);
+    public function store(Request $request, Umkm $umkm)
+    {
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'harga'       => 'required|numeric|min:0',
+            'deskripsi'   => 'nullable|string',
+            'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    return redirect()->route('admin.umkm.products.index', $umkm->id)
-                     ->with('success', 'Produk berhasil ditambahkan');
-}
+        $data = $request->only([
+            'nama_produk',
+            'harga',
+            'deskripsi'
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = ImageUploadService::upload($request->file('foto'), 'products');
+        }
+
+        $umkm->products()->create($data);
+
+        return redirect()->route('admin.umkm.products.index', $umkm->id)
+                         ->with('success', 'Produk berhasil ditambahkan');
+    }
 
     public function edit(Umkm $umkm, Product $product)
     {
@@ -48,49 +47,42 @@ public function store(Request $request, Umkm $umkm)
     }
 
     public function update(Request $request, Umkm $umkm, Product $product)
-{
-    $request->validate([
-        'nama_produk' => 'required|string|max:255',
-        'harga'       => 'required|numeric|min:0',
-        'deskripsi'   => 'nullable|string',
-        'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+    {
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'harga'       => 'required|numeric|min:0',
+            'deskripsi'   => 'nullable|string',
+            'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    $data = $request->only([
-        'nama_produk',
-        'harga',
-        'deskripsi',
-    ]);
+        $data = $request->only([
+            'nama_produk',
+            'harga',
+            'deskripsi',
+        ]);
 
-    if ($request->hasFile('foto')) {
-        if ($product->foto) {
-        Storage::disk('public')->delete($product->foto);
+        if ($request->hasFile('foto')) {
+            ImageUploadService::delete($product->foto);
+            $data['foto'] = ImageUploadService::upload($request->file('foto'), 'products');
+        }
+
+        $product->update($data);
+
+        return redirect()->route('admin.umkm.products.index', $umkm->id)
+                         ->with('success', 'Produk berhasil diperbarui');
     }
 
-    $data['foto'] = $request->file('foto')
-                            ->store('products', 'public');
+    public function create(Umkm $umkm)
+    {
+        return view('products.create', compact('umkm'));
     }
 
-    $product->update($data);
+    public function destroy(Umkm $umkm, Product $product)
+    {
+        ImageUploadService::delete($product->foto);
 
-    return redirect()->route('admin.umkm.products.index', $umkm->id)
-                     ->with('success', 'Produk berhasil diperbarui');
-}
+        $product->delete();
 
-public function create(Umkm $umkm)
-{
-    return view('products.create', compact('umkm'));
-}
-
-public function destroy(Umkm $umkm, Product $product)
-{
-    if ($product->foto) {
-        Storage::disk('public')->delete($product->foto);
+        return back()->with('success', 'Produk dihapus');
     }
-
-    $product->delete();
-
-    return back()->with('success', 'Produk dihapus');
-}
-
 }

@@ -15,7 +15,7 @@
         <div class="store-header">
             <div class="store-header-logo">
                 @if ($umkm->logo)
-                    <img src="{{ asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
+                    <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
                 @else
                     <div class="umkm-logo-placeholder" style="width:100%;height:100%;font-size:2.5rem;">
                         {{ mb_substr($umkm->nama_umkm, 0, 1) }}
@@ -58,7 +58,7 @@
                 @foreach ($products as $product)
                     <a href="{{ route('stores.product', [$umkm->id, $product->id]) }}" class="card product-pub-card">
                         @if ($product->foto)
-                            <img src="{{ asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="product-card-img">
+                            <img src="{{ str_starts_with($product->foto, 'http') ? $product->foto : asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="product-card-img">
                         @else
                             <div class="product-card-img-placeholder">🛍️</div>
                         @endif

@@ -89,7 +89,7 @@
                 <div class="umkm-card-logo">
                     <div class="umkm-logo-wrap">
                         @if ($umkm->logo)
-                            <img src="{{ asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
+                            <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
                         @else
                             <div class="umkm-logo-placeholder">
                                 {{ mb_substr($umkm->nama_umkm, 0, 1) }}

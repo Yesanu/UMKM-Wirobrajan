@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label class="form-label">Foto Saat Ini</label>
                 <div class="preview-wrap">
-                    <img src="{{ asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="preview-img">
+                    <img src="{{ str_starts_with($product->foto, 'http') ? $product->foto : asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="preview-img">
                 </div>
             </div>
         @endif
