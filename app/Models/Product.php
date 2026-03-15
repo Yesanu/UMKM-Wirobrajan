@@ -29,7 +29,7 @@ class Product extends Model
 
     public function isTersedia(): bool
     {
-        return $this->status === self::STATUS_TERSEDIA;
+        return $this->status === self::STATUS_TERSEDIA || $this->status === null;
     }
 
     /**
