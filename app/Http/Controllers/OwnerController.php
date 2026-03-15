@@ -148,6 +148,9 @@ class OwnerController extends Controller
     {
         $umkm = auth()->user()->umkm;
 
+        // Strip thousand separators from harga (e.g. "15.000" → "15000")
+        $request->merge(['harga' => str_replace(['.', ','], '', $request->input('harga', ''))]);
+
         $validated = $request->validate([
             'nama_produk' => 'required|string|max:255',
             'harga'       => 'required|numeric|min:0',
@@ -175,6 +178,9 @@ class OwnerController extends Controller
     public function updateProduct(Request $request, Product $product)
     {
         $this->authorizeProduct($product);
+
+        // Strip thousand separators from harga
+        $request->merge(['harga' => str_replace(['.', ','], '', $request->input('harga', ''))]);
 
         $validated = $request->validate([
             'nama_produk' => 'required|string|max:255',

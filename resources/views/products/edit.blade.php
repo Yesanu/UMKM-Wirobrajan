@@ -51,9 +51,11 @@
 
         <div class="form-group">
             <label class="form-label" for="harga">Harga (Rp)</label>
-            <input type="number" id="harga" name="harga"
-                   value="{{ old('harga', $product->harga) }}"
-                   min="0" class="form-input">
+            <input type="text" id="harga" name="harga"
+                   value="{{ old('harga', number_format($product->harga, 0, ',', '.')) }}"
+                   inputmode="numeric"
+                   class="form-input">
+            <p style="font-size:.78rem;color:var(--text-muted);margin-top:5px;">Gunakan titik sebagai pemisah ribuan, contoh: 15.000</p>
         </div>
 
         <div class="form-group">

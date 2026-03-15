@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         $umkms = Umkm::where('status', 'aktif')
-                     ->withCount('products')
+                     ->withCount(['products' => fn($q) => $q->where('status', 'tersedia')])
                      ->latest()
                      ->take(6)
                      ->get();

@@ -18,6 +18,9 @@ class ProductController extends Controller
 
     public function store(Request $request, Umkm $umkm)
     {
+        // Strip thousand separators from harga (e.g. "15.000" → "15000")
+        $request->merge(['harga' => str_replace(['.', ','], '', $request->input('harga', ''))]);
+
         $request->validate([
             'nama_produk' => 'required|string|max:255',
             'harga'       => 'required|numeric|min:0',
@@ -48,6 +51,9 @@ class ProductController extends Controller
 
     public function update(Request $request, Umkm $umkm, Product $product)
     {
+        // Strip thousand separators from harga
+        $request->merge(['harga' => str_replace(['.', ','], '', $request->input('harga', ''))]);
+
         $request->validate([
             'nama_produk' => 'required|string|max:255',
             'harga'       => 'required|numeric|min:0',
