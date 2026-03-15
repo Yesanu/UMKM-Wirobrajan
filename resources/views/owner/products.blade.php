@@ -27,7 +27,7 @@
         @foreach ($products as $product)
             <div class="card product-card">
                 @if ($product->foto)
-                    <img src="{{ str_starts_with($product->foto, 'http') ? $product->foto : asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="product-card-img">
+                    <img src="{{ str_starts_with($product->foto, 'http') ? $product->thumbnail_foto : asset('storage/'.$product->foto) }}" alt="{{ $product->nama_produk }}" class="product-card-img" loading="lazy">
                 @else
                     <div class="product-card-img-placeholder">🛍️</div>
                 @endif

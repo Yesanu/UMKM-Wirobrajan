@@ -15,7 +15,7 @@ class ImageUploadService
      */
     public static function upload(UploadedFile $file, string $folder = 'uploads'): string
     {
-        $cloudinaryUrl = env('CLOUDINARY_URL');
+        $cloudinaryUrl = config('services.cloudinary.url');
 
         if (!$cloudinaryUrl) {
             throw new \RuntimeException('CLOUDINARY_URL environment variable is not set. Value: [' . ($cloudinaryUrl ?? 'null') . ']');
@@ -104,7 +104,7 @@ class ImageUploadService
             return;
         }
 
-        $cloudinaryUrl = env('CLOUDINARY_URL');
+        $cloudinaryUrl = config('services.cloudinary.url');
         if (!$cloudinaryUrl) {
             return;
         }

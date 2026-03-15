@@ -31,4 +31,20 @@ class Product extends Model
     {
         return $this->status === self::STATUS_TERSEDIA;
     }
+
+    /**
+     * Get the Cloudinary-optimized foto URL (600px for detail pages).
+     */
+    public function getOptimizedFotoAttribute(): ?string
+    {
+        return Umkm::optimizeCloudinaryUrl($this->foto, 'w_600,q_auto,f_auto');
+    }
+
+    /**
+     * Get the Cloudinary thumbnail foto URL (300px for card views).
+     */
+    public function getThumbnailFotoAttribute(): ?string
+    {
+        return Umkm::optimizeCloudinaryUrl($this->foto, 'w_300,q_auto,f_auto');
+    }
 }

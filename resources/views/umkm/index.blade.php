@@ -89,7 +89,7 @@
                 <div class="umkm-card-logo">
                     <div class="umkm-logo-wrap">
                         @if ($umkm->logo)
-                            <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
+                            <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->optimized_logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}" loading="lazy">
                         @else
                             <div class="umkm-logo-placeholder">
                                 {{ mb_substr($umkm->nama_umkm, 0, 1) }}
@@ -123,7 +123,7 @@
                         <div class="umkm-products-list-title">
                             Produk
                             <span style="font-weight:700;color:var(--text-secondary);">
-                                ({{ $umkm->products->count() }})
+                                ({{ $umkm->products_count }})
                             </span>
                         </div>
                         <ul>
@@ -135,9 +135,9 @@
                             @empty
                                 <li style="color:var(--text-muted);font-style:italic;">Belum ada produk</li>
                             @endforelse
-                            @if ($umkm->products->count() > 3)
+                            @if ($umkm->products_count > 3)
                                 <li style="color:var(--text-muted);font-style:italic;border:none;padding-top:4px;">
-                                    +{{ $umkm->products->count() - 3 }} produk lainnya…
+                                    +{{ $umkm->products_count - 3 }} produk lainnya…
                                 </li>
                             @endif
                         </ul>

@@ -63,7 +63,7 @@
                     <a href="{{ route('stores.show', $umkm->id) }}" class="card umkm-pub-card">
                         <div class="umkm-pub-card-logo">
                             @if ($umkm->logo)
-                                <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}">
+                                <img src="{{ str_starts_with($umkm->logo, 'http') ? $umkm->optimized_logo : asset('storage/'.$umkm->logo) }}" alt="{{ $umkm->nama_umkm }}" loading="lazy">
                             @else
                                 <div class="umkm-logo-placeholder" style="width:64px;height:64px;border-radius:50%;font-size:1.5rem;">
                                     {{ mb_substr($umkm->nama_umkm, 0, 1) }}
@@ -75,7 +75,7 @@
                                 <span class="badge-tipe" style="font-size:.6rem;">{{ $umkm->tipe_umkm }}</span>
                             @endif
                             <div class="umkm-pub-card-name">{{ $umkm->nama_umkm }}</div>
-                            <div class="umkm-pub-card-sub">{{ $umkm->products->count() }} produk • {{ $umkm->pemilik }}</div>
+                            <div class="umkm-pub-card-sub">{{ $umkm->products_count }} produk • {{ $umkm->pemilik }}</div>
                             @if ($umkm->deskripsi)
                                 <p class="umkm-pub-card-desc">{{ Str::limit($umkm->deskripsi, 80) }}</p>
                             @endif

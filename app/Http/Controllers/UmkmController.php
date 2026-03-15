@@ -14,7 +14,8 @@ class UmkmController extends Controller
         $search = $request->input('search');
         $tipe   = $request->input('tipe');
 
-        $query = Umkm::with('products');
+        $query = Umkm::withCount('products')
+                      ->with(['products' => fn($q) => $q->latest()->take(4)]);
 
         // Search by UMKM name, owner, description, OR by product name
         if ($search) {

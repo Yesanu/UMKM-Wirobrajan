@@ -16,7 +16,7 @@ class StoreController extends Controller
         $search = $request->input('search');
         $tipe   = $request->input('tipe');
 
-        $query = Umkm::where('status', 'aktif')->with('products');
+        $query = Umkm::where('status', 'aktif')->withCount('products');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
