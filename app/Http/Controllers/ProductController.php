@@ -33,6 +33,7 @@ class ProductController extends Controller
             'harga',
             'deskripsi'
         ]);
+        $data['status'] = Product::STATUS_TERSEDIA;
 
         if ($request->hasFile('foto')) {
             $data['foto'] = ImageUploadService::upload($request->file('foto'), 'products');
