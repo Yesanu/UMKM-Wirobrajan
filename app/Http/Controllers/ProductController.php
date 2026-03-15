@@ -92,4 +92,16 @@ class ProductController extends Controller
 
         return back()->with('success', 'Produk dihapus');
     }
+
+    public function toggleStatus(Umkm $umkm, Product $product)
+    {
+        $product->status = match ($product->status) {
+            'tersedia' => 'habis',
+            'habis'    => 'tersedia',
+            default    => 'tersedia',
+        };
+        $product->save();
+
+        return back()->with('success', "Status produk diubah menjadi {$product->status}.");
+    }
 }

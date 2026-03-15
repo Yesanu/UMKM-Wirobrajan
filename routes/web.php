@@ -75,4 +75,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Product CRUD (admin, nested under UMKM)
     Route::resource('umkm.products', ProductController::class);
+    Route::post('/umkm/{umkm}/products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('umkm.products.toggleStatus');
 });

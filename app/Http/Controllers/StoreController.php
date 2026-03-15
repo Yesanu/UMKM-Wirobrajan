@@ -17,9 +17,7 @@ class StoreController extends Controller
         $tipe   = $request->input('tipe');
 
         $query = Umkm::where('status', 'aktif')
-                      ->withCount(['products' => fn($q) => $q->where(function ($sq) {
-                          $sq->where('status', 'tersedia')->orWhereNull('status');
-                      })]);
+                      ->withCount(['products' => fn($q) => $q->where('status', 'tersedia')]);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -56,10 +54,7 @@ class StoreController extends Controller
         }
 
         $products = $umkm->products()
-                         ->where(function ($q) {
-                             $q->where('status', Product::STATUS_TERSEDIA)
-                               ->orWhereNull('status');
-                         })
+                         ->where('status', Product::STATUS_TERSEDIA)
                          ->latest()
                          ->paginate(10);
 
